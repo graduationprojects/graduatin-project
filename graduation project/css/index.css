@@ -78,6 +78,10 @@ nav ul li a{
 }
 
 /*end header*/
+footer{
+	height: 200px;
+	background: #49CD5F;
+}
 .interval{
 	width: 100%;
 	height: 15px;
@@ -171,6 +175,4 @@ nav ul li a{
 @media only screen and (max-width: 359px){
     .box .box-content{ padding: 10px; }
 }
-.fknowledge{
-	
-}
+.{}
