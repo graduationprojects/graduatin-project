@@ -3,7 +3,7 @@
 	padding: 0;
 }
 .top{
-	width: 1260px;
+	width:100%;
 	height: 75px;
 	margin: auto;
 }
@@ -13,21 +13,27 @@
 .logo{
 	
 }
+.righ{
+	width: 450px;
+	float: right;
+	margin-right: 40px;
+}
 .search{
 	margin-top: 24px;
-	float: right;
+	float: left;
 	border-radius:2px;
 	background-color:#fff;
 	border:solid 1px #27971b;
 	overflow: hidden;
 	width:311px;
 	height: 28px;
+	/*margin-left: 60%;*/
+	/*position: absolute;*/
 }
 #kw{
 	border:0;
 	width:226px;
 	height:28px;
-	*height:26px;
 	line-height:26px;
 	margin-top:-2px;
 	float:left;
@@ -37,7 +43,7 @@
 	color:green;
 	font-family:宋体;
 	}
-#kw::-webkit-input-placeholder{color:#dedede}#kw::-m-input-placeholder{color:#dedede}#kw::-moz-placeholder{color:#dedede}
+/*#kw::-webkit-input-placeholder{color:#dedede}#kw::-m-input-placeholder{color:#dedede}#kw::-moz-placeholder{color:#dedede}*/
 .search span{
 	width:30px;
 	height:16px;
@@ -61,13 +67,57 @@
 	}
 .search .btn:hover{opacity:.9;filter:alpha(opacity=90);
 }
-.menu{
-	width: 100%;
-	height: 40px;
-	background:#49CD5F;
+.lgri{
+	width: 80px;
+	float:right;
+	/*position: relative;*/
+	margin-top: 24px;
+	/*margin-right: 10%;*/
 }
+.menu{
+	height: 40px;
+	background: #49cd5f;
+	border-bottom: 1px solid #ccc;
+	z-index: 10;
+	line-height: 40px;
+	/*width: 1260px;*/
+	width: 100%;
+	margin: auto;
+	position: relative;
+	font-size:17px;
+	
+	font-family:"Tahoma","Microsoft Yahei"
+}
+.menu ul{
+	width: 1260px;
+	padding:0; 
+	margin:0 auto; 
+	list-style-type:none;	
+}
+.menu ul li {
+	 float:left; 
+	 /*border-right:1px solid #fff;*/
+	 background: #49cd5f;
+}
+.menu ul li a{
+	display:block; 
+	padding:0px 30px; 
+	height:40px; 
+	line-height:40px; 
+	color: white;
+}
+
+
 footer{
 	height: 200px;
 	background: #49CD5F;
 	margin-top: 20px;
+	width: 100%;
+}
+.line{
+	width: 100%;
+	height:30px;
+	color: white;
+	/*font-size: 22px;*/
+	text-align: center;
 }
