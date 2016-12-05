@@ -16,7 +16,7 @@
 .righ{
 	width: 450px;
 	float: right;
-	margin-right: 40px;
+	margin-right: 40px; 
 }
 .search{
 	margin-top: 24px;
@@ -114,10 +114,33 @@ footer{
 	margin-top: 20px;
 	width: 100%;
 }
-.line{
-	width: 100%;
-	height:30px;
+.footleft{
+	width: 300px;
+	float: left;
+	margin-left: 20%;
+	margin-top:60px ;
+}
+.copyright{
+	height:35px;
 	color: white;
-	/*font-size: 22px;*/
+	font-size: 20px;
 	text-align: center;
+
+}
+.ftarget{
+	height: 35px;
+	color: white;
+	font-size: 20px;
+	text-align: center;
+}
+
+.qrcode{
+	width: 142px;
+	float: right;
+	margin-right:20% ;
+	margin-top: 30px;
+	
+}
+.qrcode img{
+	float: right;
 }
