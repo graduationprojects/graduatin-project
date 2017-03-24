@@ -3,9 +3,130 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>花卉推荐</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<link rel="stylesheet" type="text/css" href="../css/headfooter.css" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" type="text/css" href="../css/base.css" />
+		<link rel="stylesheet" type="text/css" href="../css/recommend.css" />
+		<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/jQueryColor.js"></script>
+		
+		<script type="text/javascript" src="../js/jquery.masonry.min.js"></script>
+		<script type="text/javascript" src="../js/jQeasing.js"></script>
+		<script type="text/javascript">
+	/*
+		抛开瀑布流布局各种乱七八糟的算法，基于masonry的瀑布流，很是简单的，而且通过扩展animate,能实现瀑布流布局的晃动、弹球等效果。
+		masonry还有很多参数我这里注解了常用的参数
+	 */
+		$(function(){
+				/*瀑布流开始*/
+				var container = $('.waterfull ul');
+				var loading=$('#imloading');
+				// 初始化loading状态
+				loading.data("on",true);
+				/*判断瀑布流最大布局宽度，最大为1280*/
+				function tores(){
+					var tmpWid=$(window).width();
+					if(tmpWid>1280){
+						tmpWid=1280;
+					}else{
+						var column=Math.floor(tmpWid/320);
+						tmpWid=column*320;
+					}
+					$('.waterfull').width(tmpWid);
+				}
+				tores();
+				$(window).resize(function(){
+					tores();
+				});
+				container.imagesLoaded(function(){
+				  container.masonry({
+				  	columnWidth: 320,
+				    itemSelector : '.item',
+				    isFitWidth: true,//是否根据浏览器窗口大小自动适应默认false
+				    isAnimated: true,//是否采用jquery动画进行重拍版
+				    isRTL:false,//设置布局的排列方式，即：定位砖块时，是从左向右排列还是从右向左排列。默认值为false，即从左向右
+				    isResizable: true,//是否自动布局默认true
+				    animationOptions: {
+						duration: 800,
+						easing: 'easeInOutBack',//如果你引用了jQeasing这里就可以添加对应的动态动画效果，如果没引用删除这行，默认是匀速变化
+						queue: false//是否队列，从一点填充瀑布流
+					}
+				  });
+				});
+				/*模拟从后台获取到的数据*/
+				var sqlJson=[{'title':'瀑布流其实就是几个函数的事！','intro':'爆料，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。','src':'images/one.jpg','writer':'jq22','date':'2小时前','looked':321},{'title':'瀑布流其实就是几个函数的事！','intro':'爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。','src':'images/demo2.jpg','writer':'jq22','date':'2小时前','looked':321},{'title':'瀑布流其实就是几个函数的事！','intro':'爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。','src':'images/p1.jpg','writer':'jq22','date':'2小时前','looked':321},{'title':'瀑布流其实就是几个函数的事！','intro':'爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。','src':'images/p1.jpg','writer':'jq22','date':'2小时前','looked':321}];
+				/*本应该通过ajax从后台请求过来类似sqljson的数据然后，便利，进行填充，这里我们用sqlJson来模拟一下数据*/
+				$(window).scroll(function(){
+					if(!loading.data("on")) return;
+					// 计算所有瀑布流块中距离顶部最大，进而在滚动条滚动时，来进行ajax请求，方法很多这里只列举最简单一种，最易理解一种
+					var itemNum=$('#waterfull').find('.item').length;
+					var itemArr=[];
+					itemArr[0]=$('#waterfull').find('.item').eq(itemNum-1).offset().top+$('#waterfull').find('.item').eq(itemNum-1)[0].offsetHeight;
+					itemArr[1]=$('#waterfull').find('.item').eq(itemNum-2).offset().top+$('#waterfull').find('.item').eq(itemNum-1)[0].offsetHeight;
+					itemArr[2]=$('#waterfull').find('.item').eq(itemNum-3).offset().top+$('#waterfull').find('.item').eq(itemNum-1)[0].offsetHeight;
+					var maxTop=Math.max.apply(null,itemArr);
+					if(maxTop<$(window).height()+$(document).scrollTop()){
+						//加载更多数据
+						loading.data("on",false).fadeIn(800);
+						(function(sqlJson){
+							/*这里会根据后台返回的数据来判断是否你进行分页或者数据加载完毕这里假设大于30就不在加载数据*/
+							if(itemNum>30){
+								loading.text('就有这么多了！');
+							}else{
+								var html="";
+								for(var i in sqlJson){
+									html+="<li class='item'><a href='#' class='a-img'><img src='"+sqlJson[i].src+"'></a>";
+									html+="<h2 class='li-title'>"+sqlJson[i].title+"</h2>";
+									html+="<p class='description'>"+sqlJson[i].intro+"</p><div class='qianm clearfloat'>";
+									html+="<span class='sp1'><b>"+sqlJson[i].looked+"</b>浏览</span>";
+									html+="<span class='sp2'>"+sqlJson[i].writer+"</span><span class='sp3'>"+sqlJson[i].date+"&nbsp;By</span></div></li>";		
+								}
+								/*模拟ajax请求数据时延时800毫秒*/
+								var time=setTimeout(function(){
+									$(html).find('img').each(function(index){
+										loadImage($(this).attr('src'));
+									})
+									var $newElems = $(html).css({ opacity: 0}).appendTo(container);
+									$newElems.imagesLoaded(function(){
+										$newElems.animate({ opacity: 1},800);
+										container.masonry( 'appended', $newElems,true);
+										loading.data("on",true).fadeOut();
+										clearTimeout(time);
+							        });
+								},800)
+							}
+						})(sqlJson);
+					}
+				});
+				function loadImage(url) {
+				     var img = new Image(); 
+				     //创建一个Image对象，实现图片的预下载
+				      img.src = url;
+				      if (img.complete) {
+				         return img.src;
+				      }
+				      img.onload = function () {
+				       	return img.src;
+				      };
+				 };
+				 loadImage('images/one.jpg');
+				/*item hover效果*/
+				var rbgB=['#71D3F5','#F0C179','#F28386','#8BD38B'];
+				$('#waterfull').on('mouseover','.item',function(){
+					var random=Math.floor(Math.random() * 4);
+					$(this).stop(true).animate({'backgroundColor':rbgB[random]},1000);
+				});
+				$('#waterfull').on('mouseout','.item',function(){
+					$(this).stop(true).animate({'backgroundColor':'#fff'},1000);
+				});
+		})
+    </script>
+	<script type="text/javascript" src="../js/recommend.js" charset="gb2312"></script>
+	<script type="text/javascript">hQGHuMEAyLn('.adsbygoogle,.fdad,.inner > .add');</script>
 	</head>
 	<body>
+		<style>.inner > .add{display:none;position:absolute;top:-1000000px;visibility:hidden}.fdad,.adsbygoogle{display:none;position:absolute;top:-1000000px;visibility:hidden}</style>
 		<header>
 			<div class="top">
 				<div class="righ">
@@ -14,7 +135,7 @@
 						<span></span>
 						<div class="btn">搜索</div>
 					</form>
-					<div class="lgri"><a href="login.html">登录</a>/<a href="register.html">注册</a></div>
+					<div class="lgri"><a href="login.html#loginForm">登录</a>/<a href="register.html#number">注册</a></div>
 				</div>
 			</div>
 			<div class="menu">
@@ -27,6 +148,286 @@
 				</ul>
 			</div>
 		</header>
+			<div class="content">
+		<!-- 瀑布流样式开始 -->
+		<div class="waterfull clearfloat" id="waterfull" style="width: 1280px;">
+			<ul class="masonry" style="position: relative; height: 3541px; width: 1280px;">
+				<li class="item masonry-brick" style="position: absolute; top: 0px; left: 0px; background-color: rgb(255, 255, 255);">
+					<a href="#" class="a-img">
+						<img src="../img/t8.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="">千佛手</h2>
+					<p class="description">千佛手开花的样子非常别致，刚开始被绿色叶子所包拢保护，叶子张开的时候才露出花苞，花为黄色。不过很难见到千佛手开花的样子哟！</p>
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 0px; left: 320px; background-color: rgb(255, 255, 255);">
+					<a href="#" class="a-img">
+						<img src="../img/t7.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="手把手教你用css3来创建loading动画(二)">荷叶椒草</h2>
+					<p class="description">荷叶椒草又叫一柱香、岩豆瓣、豆瓣草、豆瓣如意、四瓣金钗、指甲草、豆瓣打不死，叶姿玲珑可爱，翠绿不凋，耐阴。</p>
+
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 0px; left: 640px; background-color: rgb(255, 255, 255);">
+					<a href="#" class="a-img">
+						<img src="../img/t9.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="手把手教你用css3来创建loading动画(二)">非洲茉莉</h2>
+					<p class="description">非洲茉莉是常见的观叶植物，但却能开出白色的清香小花，朵朵白花，清香幽远，搭配茂盛的叶片，万绿丛中一点白。</p>
+
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 0px; left: 960px; background-color: rgb(255, 255, 255);">
+					<a href="#" class="a-img">
+						<img src="../img/t2.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="">彼岸花</h2>
+					<p class="description">彼岸花是一种充满着神奇色彩的花，它是开在天界之花，是生长在三途河边的接引之花，花香传说有魔力，能唤起死者生前的记忆。</p>
+
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 420px; left: 0px; background-color: rgb(255, 255, 255);">
+					<a href="#" class="a-img">
+						<img src="../img/t6.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="">紫色风信子</h2>
+					<p class="description">紫色风信子的花语是悲伤、妒忌，忧郁的爱（得到我的爱，你一定会幸福快乐）、道歉、后悔。如此的矛盾，如此的美丽。</p>
+
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 420px; left: 640px; background-color: rgb(255, 255, 255);">
+					<a href="#" class="a-img">
+						<img src="../img/t5.jpg" alt="">	
+					</a>
+					<h2 class="li-title" title="">迷迭香</h2>
+					<p class="description">迷迭香被定义为爱情、忠贞和友谊的象征，而它的花语则是回忆，拭去回忆的忧伤。</p>
+
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 454px; left: 320px; background-color: rgb(255, 255, 255);">
+					<a href="#" class="a-img">
+						<img src="../img/t10.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="">使君子</h2>
+					<p class="description">人们大多知晓它的药物作用，重视它的果实，其实谦谦君子也有温润的外表。</p>
+
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 566px; left: 960px;">
+					<a href="#" class="a-img">
+						<img src="../img/t11.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="">深山含笑</h2>
+					<p class="description">深山含笑开放之时，犹如面白唇红色美人一般，眉目间含带笑意。正如它的名字一般，真的是名如其花。</p>
+					<div class="qianm clearfloat">
+						<span class="sp1"><b>688</b>浏览</span>
+						<span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span>
+					</div>
+				</li>
+                <li class="item masonry-brick" style="position: absolute; top: 986px; left: 960px;">
+					<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+						<img src="../img/t8.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="手把手教你用css3来创建loading动画(二)">手把手教你用css3来创建loading动画(二)</h2>
+					<p class="description">HTML 5以前的标准由于考虑到浏览器安全问题并不允许直接跨域通信并不允许直接跨域通信并不允许直接跨域通信，于...</p>
+					<div class="qianm clearfloat">
+						<span class="sp1"><b>688</b>浏览</span>
+						<span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span>
+					</div>
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 987px; left: 0px; background-color: rgb(255, 255, 255);">
+					<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+						<img src="../img/t7.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="手把手教你用css3来创建loading动画(二)">手把手教你用css3来创建loading动画(二)</h2>
+					<p class="description">HTML 5以前的标准由于考虑到浏览器安全问题并不允许直接跨域通信并不允许直接跨域通信并不允许直接跨域通信，于...</p>
+					<div class="qianm clearfloat">
+						<span class="sp1"><b>688</b>浏览</span>
+						<span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span>
+					</div>
+				</li>
+				<li class="item masonry-brick" style="position: absolute; top: 992px; left: 640px;">
+					<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+						<img src="../img/t9.jpg" alt="">
+						
+					</a>
+					<h2 class="li-title" title="手把手教你用css3来创建loading动画(二)">手把手教你用css3来创建loading动画(二)</h2>
+					<p class="description">HTML 5以前的标准由于考虑到浏览器安全问题并不允许直接跨域通信并不允许直接跨域通信并不允许直接跨域通信，于...</p>
+					<div class="qianm clearfloat">
+						<span class="sp1"><b>688</b>浏览</span>
+						<span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span>
+					</div>
+				</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 1129px; position: absolute; left: 320px; background-color: rgb(255, 255, 255);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img"><img src="../img/one.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+				<div class="qianm clearfloat">
+					<span class="sp1"><b>321</b>浏览</span>
+					<span class="sp2">jq22</span>
+					<span class="sp3">2小时前&nbsp;By</span>
+				</div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 1406px; position: absolute; left: 960px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/demo2.jpg"></a>
+					<h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+					<div class="qianm clearfloat">
+						<span class="sp1"><b>321</b>浏览</span>
+						<span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span>
+					</div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 1412px; position: absolute; left: 640px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg">
+				</a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+				<div class="qianm clearfloat">
+					<span class="sp1"><b>321</b>浏览</span>
+					<span class="sp2">jq22</span>
+					<span class="sp3">2小时前&nbsp;By</span>
+				</div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 1441px; position: absolute; left: 0px; background-color: rgb(255, 255, 255);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg">
+				</a>
+				<h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+				<div class="qianm clearfloat">
+					<span class="sp1"><b>321</b>浏览</span>
+					<span class="sp2">jq22</span><span class="sp3">2小时前&nbsp;By</span>
+				</div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 0.9951; top: 1540.28px; position: absolute; left: 328.946px; background-color: rgb(255, 255, 255);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/one.jpg">
+				</a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+				<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+					<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 1826px; position: absolute; left: 960px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/demo2.jpg">
+				</a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+				<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span>
+					<span class="sp2">jq22</span><span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 1832px; position: absolute; left: 640px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg"></a>
+					<h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+					<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span>
+						<span class="sp2">jq22</span><span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 1861px; position: absolute; left: 0px; background-color: rgb(255, 255, 255);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+					<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 1969px; position: absolute; left: 320px; background-color: rgb(255, 255, 255);"><a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+				<img src="../img/one.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p><div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span><span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 2246px; position: absolute; left: 960px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/demo2.jpg">
+				</a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+				<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+					<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 2252px; position: absolute; left: 640px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg"></a>
+					<h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+					<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 2281px; position: absolute; left: 0px; background-color: rgb(255, 255, 255);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+					<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 0.999375; top: 2387.33px; position: absolute; left: 321.715px; background-color: rgb(255, 255, 255);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/one.jpg">
+				</a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+				<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+					<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 2666px; position: absolute; left: 960px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/demo2.jpg">
+				</a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+				<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+				<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+					<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 2672px; position: absolute; left: 640px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg"></a>
+					<h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+					<div class="qianm clearfloat">
+						<span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 2701px; position: absolute; left: 0px; background-color: rgb(153, 223, 247);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+					<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 0.992561; top: 2797.29px; position: absolute; left: 332.006px; background-color: rgb(251, 219, 220);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/one.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2><p class="description">爆料，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p><div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span><span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 3086px; position: absolute; left: 960px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/demo2.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p><div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span><span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 3092px; position: absolute; left: 640px;">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p><div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span><span class="sp3">2小时前&nbsp;By</span>
+						
+					</div>
+			</li>
+			<li class="item masonry-brick" style="opacity: 1; top: 3121px; position: absolute; left: 0px; background-color: rgb(255, 255, 255);">
+				<a href="http://www.jq22.com/demo/jQuery-pbl20161013/#" class="a-img">
+					<img src="../img/p1.jpg"></a><h2 class="li-title">瀑布流其实就是几个函数的事！</h2>
+					<p class="description">爆料了，苏亚雷斯又咬人啦，C罗哪有内马尔帅，梅西今年要不夺冠，你就去泰国吧，老子买了阿根廷赢得彩票，输了就去不成了。</p>
+					<div class="qianm clearfloat"><span class="sp1"><b>321</b>浏览</span><span class="sp2">jq22</span>
+						<span class="sp3">2小时前&nbsp;By</span></div>
+			</li>
+			</ul>
+		</div>
+		<!-- loading按钮自己通过样式调整 -->
+		<div id="imloading" style="width: 150px; height: 30px; line-height: 30px; font-size: 16px; text-align: center; border-radius: 3px; opacity: 0.7; margin: 10px auto 30px; color: rgb(255, 255, 255); display: block; background: rgb(0, 0, 0);">就有这么多了！</div>
+	</div>
+
+
+<iframe frameborder="0" scrolling="no" src="./jQuery无限加载瀑布流插件masonry - jq22_files/2.html" style="visibility: hidden; width: 299px; height: 249px; right: 0px; bottom: 0px; position: fixed; border: none; opacity: 0; background: white;"></iframe>
 		<footer>
 			<div class="footleft">
 				<div class="copyright">copyright</div>

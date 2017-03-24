@@ -12,9 +12,9 @@
 
 	 
 
-	//自动每3秒切换一次 
+	//自动每6秒切换一次 
 
-    timer=setInterval(init,3000);	
+    timer=setInterval(init,6000);	
 
 	function init(){
 
@@ -30,7 +30,7 @@
 
 		},function(){
 
-			timer=setInterval(init,3000);
+			timer=setInterval(init,6000);
 
 	   });
 

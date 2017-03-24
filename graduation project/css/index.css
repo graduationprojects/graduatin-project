@@ -7,7 +7,7 @@ header{
 	height: 460px;
 	width: 100%;
 	/*background:#fffff9;*/
-	background:url(../img/hb1.png);
+	/*background:url(../img/hb1.png);*/
 	z-index: -1;
 	/*position: absolute;*/
 }
@@ -86,7 +86,10 @@ nav ul li a{
 footer{
 	height: 200px;
 	background: #49CD5F;
+	margin-top: 20px;
+	width: 100%;
 }
+
 .interval{
 	width: 100%;
 	height: 15px;
@@ -99,10 +102,10 @@ footer{
 	margin: auto;
 	
 }
-.recommend{
+.ntitle{
 	width: 100%;
-	height: auto;
-	margin-bottom: 15px;
+	/*height: auto;*/
+	/*margin-bottom: 15px;*/
 }
 
 .nre{
@@ -111,8 +114,9 @@ footer{
 	margin-bottom: 20px;
 }
 .titbox{
-	width: 1260px;
-	margin: auto;
+	/*width: 1260px;*/
+	text-align: center;
+	/*margin: auto;*/
 }
 
 .box{
@@ -148,6 +152,7 @@ footer{
     opacity: 1;
     transform: scale(1) rotate(0deg);
     transition-delay: 0.2s;
+    
 }
 .box .title{
     font-size: 20px;
@@ -156,12 +161,17 @@ footer{
     padding-bottom: 10px;
     margin-top: 0;
     text-transform: capitalize;
+    background: #425770;
+    
+    
 }
 .box .description{
     font-size: 13px;
     font-style: italic;
     line-height: 20px;
     margin-bottom: 30px;
+    background: #425770;
+    
 }
 .box .read{
     display: inline-block;
@@ -180,4 +190,63 @@ footer{
 @media only screen and (max-width: 359px){
     .box .box-content{ padding: 10px; }
 }
-.{}
+.dsleft{
+	height: 300px;
+	/*position: relative;*/
+}
+.dsleft img{
+	width:500px;
+	height: 300px;
+	list-style: none;
+	/*float: left;*/
+}
+
+.dsright{
+	height: 300px;
+	background: #becec1;
+}
+.dsright ul li{
+	height :50px;
+	list-style: none;
+	font-size: 1.5em;
+	text-align: left;
+}
+.dsright ul li a {text-decoration: none;font-family: "Microsoft YaHei";color:#000;}
+.dsrightr{
+	height: 300px;
+	background: #becec1;
+}
+.dsrightr ul li{
+	height :50px;
+	list-style: none;
+	font-size: 1.5em;
+	text-align:right;
+}
+@charset "utf-8";
+/* CSS Document */
+/*精彩推荐*/
+.slideBox{width: 750px;height:328px;overflow:hidden;position:relative;}
+.bannerBgDiv{width:100%;height:328px;}
+.bannerDiv{ width:1200px; margin:0 auto;}
+.bannerDiv .bannerright{ width:728px;height:328px;float:left;}
+.slideBox .hd {height:15px;overflow:hidden;position:absolute;right:15px;bottom:15px;z-index:1;}
+.slideBox .bd {position:relative;height:100%;z-index:0;}
+.slideBox .bd ul{ margin:0px 0px; padding-left:0px;}
+.slideBox .hd ul{ margin:0px 0px; padding-left:0px;}
+.slideBox .hd ul {overflow: hidden;zoom:1;float:left;}
+.slideBox .hd ul li.on {background: #44B549;color:#fff;}
+.slideBox .hd ul li {float: left;width:12px;margin-right:10px;height:12px;line-height:12px;text-align: center;background:#fff;cursor:pointer;border-radius: 50%;}
+li {display:list-item;text-align: -webkit-match-parent;list-style-type: none;}
+.mainBox{ margin-left:20px; margin-right:20px;}
+a {text-decoration: none;font-family: "Microsoft YaHei";color:#666;}
+.wzmore {text-align:right;margin-top:0px; margin-bottom:20px;float:right;}
+.bannerBgDiv{ margin-bottom:20px;}
+
+/*热门花卉养护、每日精选、热门帖子*/
+.yangDiv .yangBox{ width:1200px; margin:0 auto; height:332px; background-color:#fff;overflow:hidden;position:relative; margin-bottom:20px;}
+.tempWrap{ position:relative;}
+.slick-btn-left{ width:26px; height:26px; border-radius:50%;background-color:rgba(0,0,0,.1); position:absolute; top:40%; z-index:1; left:16px; margin-top:-24px; cursor:pointer;}
+.slick-btn-right{ width:26px; height:26px; border-radius:50%;background-color:#000;background-color:rgba(0,0,0,.1); position:absolute; top:40%; z-index:1; right:16px; margin-top:-24px; cursor:pointer;}
+.yangBox .titleBox {border-bottom:solid 1px #eee;margin:0 20px;margin-bottom: 20px;}
+.tempWrap .t{ font-size:16px; color:#666; line-height:36px;}
+.tempWrap .c{ font-size:12px; color:#999; line-height:16px;width: 210px;height:30px;overflow:hidden;}
